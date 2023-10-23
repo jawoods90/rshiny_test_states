@@ -8,17 +8,14 @@ ui <- fluidPage(
       fluidRow(
         column(8,
           sliderInput(inputId = "n", label = "select number of states",
-                           min = 1, max = 30, value = 1, step = 1)),
-              ),
+                           min = 1, max = 30, value = 1, step = 1)
+              )),
       fluidRow(
         column(6,
           tableOutput(outputId = "list"),
-
-      ))
+              )),
   )
-
-  
-  
+)
 )
 
 # Define server logic required to draw a histogram
