@@ -26,20 +26,12 @@ ui <- fluidPage(
     ),
     tabPanel("State Spotlight",
       fluidRow(
-        column(8,
+        column(4,
           selectInput(inputId = "state", label = "select state",
                       choices = state.name)
-        )
-      ),
-      fluidRow(
-        column(4,
-          tableOutput(outputId = "ranklist"),
         ),
-        column(4,
-          plotOutput(outputId = "rankarea"),
-        ),
-        column(4,
-          plotOutput(outputId = "rankincome")
+        column(8,
+          tableOutput(outputId = "info")
         )
       )
     )
@@ -69,11 +61,12 @@ server <- function(input, output) {
           theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) # Rotate axis label
     })
     
-    output$ranklist <- renderTable({
+    output$info <- renderTable({
       df_states %>%
         dplyr::filter(State == input$state) %>%
-        dplyr::select(State, RankPop, RankArea, RankIncome)
+        dplyr::select(Population, Area, Income, Illiteracy, Murder, Life Exp)
     })
+    
     
 }
 
