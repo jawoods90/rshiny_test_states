@@ -24,19 +24,22 @@ ui <- fluidPage(
         )
       )
     ),
-    tabPanel("Area of US states",
+    tabPanel("State Spotlight",
       fluidRow(
         column(8,
-          sliderInput(inputId = "n", label = "select number of states",
-                      min = 1, max = 30, value = 1, step = 1)
+          selectInput(inputId = "state", label = "select state",
+                      choices = state.name)
         )
       ),
       fluidRow(
-        column(6,
-          tableOutput(outputId = "listarea"),
+        column(4,
+          tableOutput(outputId = "ranklist"),
         ),
-        column(6,
-          plotOutput(outputId = "plotarea")
+        column(4,
+          plotOutput(outputId = "rankarea"),
+        ),
+        column(4,
+          plotOutput(outputId = "rankincome")
         )
       )
     )
@@ -55,7 +58,7 @@ server <- function(input, output) {
     
     output$listpop <- renderTable({
       df_population() %>%
-        dplyr::select(State, Population)
+        dplyr::select(State, StateAbb, Population, PopShare)
     })
     
     output$plotpop <- renderPlot({
@@ -64,6 +67,12 @@ server <- function(input, output) {
           geom_point(size = 3, color = "red") + 
           geom_segment(aes(x = State, xend = State, y = 0, yend = Population)) +
           theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) # Rotate axis label
+    })
+    
+    output$ranklist <- renderTable({
+      df_states %>%
+        dplyr::filter(State == input$state) %>%
+        dplyr::select(State, RankPop, RankArea, RankIncome)
     })
     
 }
