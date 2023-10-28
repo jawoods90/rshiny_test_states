@@ -25,13 +25,23 @@ ui <- fluidPage(
       )
     ),
     tabPanel("State Spotlight",
+      titlePanel("Spotlight on two US states of your choice"),
       fluidRow(
         column(4,
-          selectInput(inputId = "state", label = "select state",
+          selectInput(inputId = "state1", label = "select state",
                       choices = state.name)
         ),
         column(8,
-          tableOutput(outputId = "info")
+          tableOutput(outputId = "info1")
+        )
+      ),
+      fluidRow(
+        column(4,
+          selectInput(inputId = "state2", label = "select state",
+                      choices = state.name)
+        ),
+        column(8,
+          tableOutput(outputId = "info2")
         )
       )
     )
@@ -42,6 +52,7 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
+# server code for tab 1
     df_population <- reactive({
       df_states %>%
         dplyr::arrange(desc(Population)) %>%
@@ -60,13 +71,19 @@ server <- function(input, output) {
           geom_segment(aes(x = State, xend = State, y = 0, yend = Population)) +
           theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) # Rotate axis label
     })
-    
-    output$info <- renderTable({
+
+# server code for tab 2
+    output$info1 <- renderTable({
       df_states %>%
-        dplyr::filter(State == input$state) %>%
-        dplyr::select(Population, Area, Income, Illiteracy, Murder, Life Exp)
+        dplyr::filter(State == input$state1) %>%
+        dplyr::select(Population, Area, Income, Illiteracy, Murder)
     })
     
+    output$info2 <- renderTable({
+      df_states %>%
+        dplyr::filter(State == input$state2) %>%
+        dplyr::select(Population, Area, Income, Illiteracy, Murder)
+    })
     
 }
 
