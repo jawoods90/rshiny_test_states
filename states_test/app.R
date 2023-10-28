@@ -1,8 +1,10 @@
 
 library(shiny)
 library(tidyverse)
+library(ggplot2)
 
-# Define UI for application that draws a histogram
+
+# Define UI for application
 ui <- fluidPage(
   
   tabsetPanel(
@@ -46,13 +48,22 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     df_population <- reactive({
-      df_state %>%
+      df_states %>%
         dplyr::arrange(desc(Population)) %>%
         dplyr::slice(1:input$n)
     })
     
     output$listpop <- renderTable({
-      df_population()
+      df_population() %>%
+        dplyr::select(State, Population)
+    })
+    
+    output$plotpop <- renderPlot({
+      df_population() %>%
+        ggplot(aes(x = State, y = Population)) +
+          geom_point(size = 3, color = "red") + 
+          geom_segment(aes(x = State, xend = State, y = 0, yend = Population)) +
+          theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) # Rotate axis label
     })
     
 }
