@@ -20,3 +20,4 @@ df_states <- df_states %>%
   dplyr::mutate(RankIncome = dense_rank(desc(Income)))
 
 
+

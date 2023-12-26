@@ -44,6 +44,8 @@ ui <- fluidPage(
           tableOutput(outputId = "info2")
         )
       )
+    ),
+    tabPanel("Income Detail"
     )
   )
 )
