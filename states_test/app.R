@@ -9,6 +9,7 @@ ui <- fluidPage(
   
   tabsetPanel(
     tabPanel("Population of US states",
+      titlePanel("Spotlight of US state populations"),
       fluidRow(
         column(8,
           sliderInput(inputId = "n", label = "select number of states",
@@ -43,9 +44,18 @@ ui <- fluidPage(
         column(8,
           tableOutput(outputId = "info2")
         )
+      ),
+      fluidRow(
+        column(2,
+          plotOutput(outputId = "chartincome")
+        ),
+        column(2,
+          plotOutput(outputId = "chartarea")
+        ),
       )
     ),
-    tabPanel("Income Detail"
+    tabPanel("Income Detail",
+      titlePanel("Spotlight on US state incomes")       
     )
   )
 )
@@ -87,6 +97,24 @@ server <- function(input, output) {
         dplyr::select(Population, Area, Income, Illiteracy, Murder)
     })
     
+    df_panel2 <- reactive({
+      df_states %>% 
+        dplyr::filter(State == c(input$state1, input$state2))
+    })
+    
+    output$chartincome <- renderPlot({
+      df_panel2() %>%
+        ggplot(aes(x = State, y = Income)) +
+          geom_col(fill = "red", colour = "black") +
+          theme_minimal()
+    })
+    
+    output$chartarea <- renderPlot({
+      df_panel2() %>%
+        ggplot(aes(x = State, y = Area)) +
+        geom_col(fill = "red", colour = "black") +
+        theme_minimal()
+    })
 }
 
 # Run the application 
